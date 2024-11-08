@@ -1,25 +1,21 @@
-use tinyaudio::prelude::*;
+use cpal::traits::{DeviceTrait, HostTrait};
+use cpal::Device;
+
 fn main() {
-    let params = OutputDeviceParameters {
-        channels_count: 2,
-        sample_rate: 44100,
-        channel_sample_count: 4410,
-    };
+    let host = cpal::default_host();
+    dbg!("Host ID: {}", host.id());
+    let default_output_device: Device = host
+        .default_output_device()
+        .expect("no output device available");
+    println!("Default output_device:");
+    print_device_info(&default_output_device);
 
-    let _device = run_output_device(params, {
-        let mut clock = 0f32;
-        move |data| {
-            for samples in data.chunks_mut(params.channels_count) {
-                clock = (clock + 1.0) % params.sample_rate as f32;
-                let value =
-                    (clock * 440.0 * 2.0 * std::f32::consts::PI / params.sample_rate as f32).sin();
-                for sample in samples {
-                    *sample = value;
-                }
-            }
-        }
-    })
-    .unwrap();
+    let all_devices = host.devices().expect("could not get all devices");
+    for d in all_devices {
+        print_device_info(&d);
+    }
+}
 
-    std::thread::sleep(std::time::Duration::from_secs(5));
+fn print_device_info(dev: &cpal::Device) {
+    println!("{}", dev.name().expect("Device Name Error"));
 }
