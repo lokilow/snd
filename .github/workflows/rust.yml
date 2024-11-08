@@ -2,21 +2,22 @@ name: Rust
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build
-      run: cargo clippy --verbose -- -D warnings
-    - name: Run tests
-      run: cargo test --verbose
+      - uses: actions/checkout@v4
+      - name: Install deps
+        run: sudo apt update && sudo apt upgrade -y && sudo apt install libasound2-dev
+      - name: Build
+        run: cargo clippy --verbose -- -D warnings
+      - name: Run tests
+        run: cargo test --verbose
