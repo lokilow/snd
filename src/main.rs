@@ -1,5 +1,5 @@
 use cpal::traits::{DeviceTrait, HostTrait};
-use cpal::{Device, Host, SupportedStreamConfigRange};
+use cpal::{Device, SupportedStreamConfigRange};
 
 fn main() {
     let host = cpal::default_host();
